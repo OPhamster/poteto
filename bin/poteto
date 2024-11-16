@@ -14,16 +14,18 @@ OptionParser.new do |parser|
   parser.on("-r", "--repo", "Name of the github repository") do |r|
     options[:repo] = r
   end
+  parser.on("-f", "--config-file", "Name of the config file") do |c|
+    options[:config_file] = c
+  end
 end
 
 commit_id = ARGV[0]
 pr_id = ARGV[1]
-gr = Poteto::GenerateRubocopReview.new(commit_id)
-reviews = gr.call
-puts reviews
+config_file = options[:config_file]
 if options[:no_post] = true
+  puts Poteto.generate_reviews(commit_id, nil).flatten.map(&:raw_data)
 else
   # Not supported
   puts "Not supported. Exiting...."
-  # Poteto::PostReview.new(options[:repo], commit_id, pr_id)
+  Poteto.perform(commit_id, pr_id, repo, config_file: nil)
 end

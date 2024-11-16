@@ -21,7 +21,7 @@ module Poteto
     end
 
     def call
-      rubocop_on_changes(files_change_ranges_for_rubocop)
+      @reviews << rubocop_on_changes(files_change_ranges_for_rubocop)
     end
 
     def changed_files

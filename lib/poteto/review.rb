@@ -2,22 +2,19 @@
 
 module Poteto
   class Review
-    attr_accessor :path
-    attr_accessor :line
-    attr_accessor :comment
+    attr_accessor :path, :line, :comment
+    attr_reader :raw_data
 
     def initialize(raw_data, file_name: nil)
       @raw_data = raw_data
       @file_name = file_name
-      if file_name.present?
-        @path = file_name
-      end
+      @path = file_name unless file_name.nil?
     end
   end
 
   class RubocopReview < Review
     def initialize(raw_data, file_name: nil)
-      super(data, file_name: file_name)
+      super(raw_data, file_name: file_name)
       parse
     end
 

@@ -5,6 +5,7 @@ PATH
       octokit
       open3 (~> 0.1.1)
       optparse (~> 0.2.0)
+      yaml (~> 0.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -78,6 +79,7 @@ GEM
     sorbet-runtime (0.5.11647)
     unicode-display_width (2.6.0)
     uri (1.0.2)
+    yaml (0.2.1)
 
 PLATFORMS
   ruby
