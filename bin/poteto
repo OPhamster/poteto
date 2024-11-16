@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "poteto"
+require "optparse"
+
+options = {}
+OptionParser.new do |parser|
+  parser.banner = "Usage: poteto <commit_id> <pr_id> [options]"
+
+  parser.on("-n", "--no-post", "Run without posting to github. Throws up the data on STDOUT") do |n|
+    options[:no_post] = true
+  end
+  parser.on("-r", "--repo", "Name of the github repository") do |r|
+    options[:repo] = r
+  end
+end
+
+commit_id = ARGV[0]
+pr_id = ARGV[1]
+gr = Poteto::GenerateRubocopReview.new(commit_id)
+reviews = gr.call
+puts reviews
+if options[:no_post] = true
+else
+  # Not supported
+  puts "Not supported. Exiting...."
+  # Poteto::PostReview.new(options[:repo], commit_id, pr_id)
+end
