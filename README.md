@@ -1,31 +1,59 @@
 # Poteto
 
-TODO: Delete this and the text below, and describe your gem
+* Currently only
+  * generates the diff on certain files (as specified by exclude list embedded in the lib)
+  * for each file tries to find the relevant linenos only, since we don't want to throw up 
+    the entire file's violations to the dev.
+  * For each file we get the line range of the changes by the diffs; both Max and min (the 
+    algorithm to max and min is subject to change and testing as to where it gives the best results)
+  * For each file we use the `max`, `min` line nos to project only those violations in between them
+* Doesn't post to Github yet with the result via octokit
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/poteto`. To experiment with that code, run `bin/console` for an interactive prompt.
+```bash
+# config file
+$ cat poteto.yaml 
+reviewers:
+  - rubocop
 
-## Installation
+$ ./bin/poteto HEAD~ -n
+::error file=bin/poteto,line=14,col=13::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=bin/poteto,line=14,col=19::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=bin/poteto,line=14,col=29::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=bin/poteto,line=17,col=13::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=bin/poteto,line=17,col=19::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=bin/poteto,line=17,col=36::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=bin/poteto,line=24,col=1::Lint/UselessAssignment: Useless assignment to variable - `config_file`.
+::error file=bin/poteto,line=25,col=22::Lint/AssignmentInCondition: Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+::error file=bin/poteto,line=29,col=8::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto.rb,line=4,col=18::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto.rb,line=5,col=18::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto.rb,line=6,col=18::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto.rb,line=7,col=9::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto.rb,line=9,col=1::Style/Documentation: Missing top-level documentation comment for `module Poteto`.
+::error file=lib/poteto.rb,line=13,col=27::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto.rb,line=17,col=20::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto/generate_review.rb,line=28,col=19::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto/generate_review.rb,line=28,col=26::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto/generate_review.rb,line=28,col=34::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto/generate_review.rb,line=28,col=55::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=lib/poteto/review.rb,line=4,col=3::Style/Documentation: Missing top-level documentation comment for `class Poteto::Review`.
+::error file=lib/poteto/review.rb,line=15,col=3::Style/Documentation: Missing top-level documentation comment for `class Poteto::RubocopReview`.
+::error file=poteto.gemspec,line=32,col=25::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=34,col=23::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=34,col=32::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=35,col=3::Gemspec/OrderedDependencies: Dependencies should be sorted in an alphabetical order within their section of the gemspec. Dependency `octokit` should appear before `open3`.
+::error file=poteto.gemspec,line=35,col=23::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=36,col=23::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=36,col=35::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=37,col=23::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=37,col=31::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=38,col=35::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=38,col=44::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=39,col=35::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=39,col=46::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+::error file=poteto.gemspec,line=40,col=35::Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
+```
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/poteto.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ophamster/poteto.
