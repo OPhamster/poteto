@@ -51,7 +51,7 @@ module Poteto
 
     def change_ranges(files)
       files.to_h do |f|
-        meta = command(["git diff #{commit_id}..HEAD -- #{f} | grep '^@@'"])
+        meta = command(["git diff #{commit_id}..HEAD -U0 -- #{f} | grep '^@@'"])
         line_nos = meta.flat_map do |m|
           remove, add = m.match(/^@@(.*)@@/)[1].strip.split()
           line_nos = []
@@ -60,8 +60,8 @@ module Poteto
             line_nos << remove_start_line.to_i.abs
           end
           unless add.nil?
-            add_end_line = add.split(",").map(&:to_i).sum
-            line_nos << add_end_line
+            add_end_line, _ = add.split(",")
+            line_nos << add_end_line.to_i.abs
           end
           line_nos
         end
