@@ -3,6 +3,7 @@
 require 'yaml'
 
 module Poteto
+  # Reviewer Level config i.e config for rubocop etc
   class ReviewerConfig
     attr_reader :exclude, :reviewer, :repo
     attr_accessor :commit_id, :pr_id
@@ -19,6 +20,7 @@ module Poteto
     end
   end
 
+  # Global level config
   class Config
     attr_reader :file_path, :reviewers, :repo, :config, :commit_id, :pr_id
     attr_accessor :access_token
@@ -29,9 +31,9 @@ module Poteto
         rubocop: {
           exclude: %w[spec/ test/]
         },
-        repository: "hjadskhald"
+        repository: 'hjadskhald'
       }
-    }
+    }.freeze
 
     def initialize(file_path: nil)
       file_path ||= DEFAULT_CONFIG_FILE
@@ -54,9 +56,13 @@ module Poteto
       @pr_id = pr_id
     end
 
-    def deep_symbolize(h)
-      if h.is_a?(Hash)
-        h.to_h do |k, v|
+    # The discount `deep_symbolize` implementation
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/PerceivedComplexity
+    def deep_symbolize(obj)
+      if obj.is_a?(Hash)
+        obj.to_h do |k, v|
           case v.class
           when Hash
             [k.to_sym, deep_symbolize(v)]
@@ -68,12 +74,15 @@ module Poteto
             end
           end
         end
-      elsif dig_deeper?(h)
-        h.map { |vv| deep_symbolize(vv) }
+      elsif dig_deeper?(obj)
+        obj.map { |vv| deep_symbolize(vv) }
       else
-        h
+        obj
       end
     end
+    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def dig_deeper?(v)
       v.class.included_modules.include?(Enumerable)

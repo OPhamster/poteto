@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Poteto
+  # Review objects that hold the information to post a github review comment
   class Review
     attr_accessor :path, :line, :comment, :commit_id
     attr_reader :raw_data
@@ -13,6 +14,7 @@ module Poteto
     end
   end
 
+  # Generate Review Objects from rubocop violations
   class RubocopReview < Review
     def initialize(raw_data, file_name: nil, commit_id: nil)
       super(raw_data, file_name: file_name, commit_id: commit_id)
