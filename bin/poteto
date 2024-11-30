@@ -22,8 +22,9 @@ end
 commit_id = ARGV[0]
 pr_id = ARGV[1]
 config_file = options[:config_file]
+# Intentional
 if options[:no_post] = true
-  puts Poteto.generate_reviews(commit_id, nil).flatten.map(&:raw_data)
+  puts Poteto.generate_reviews(commit_id, config_file: config_file).flatten.map(&:raw_data)
 else
   # Not supported
   puts "Not supported. Exiting...."

@@ -7,9 +7,9 @@ module Poteto
   class GenerateReview
     attr_reader :commit_id, :exclude, :reviews
 
-    def initialize(commit_id, exclude: [])
-      @commit_id = commit_id
-      @exclude = exclude
+    def initialize(config)
+      @commit_id = config.commit_id
+      @exclude = config.exclude
       @reviews = []
     end
 
@@ -61,8 +61,8 @@ module Poteto
   end
 
   class GenerateRubocopReview < GenerateReview
-    def initialize(commit_id, exclude: ['spec/', 'test/'])
-      super(commit_id, exclude: exclude)
+    def initialize(config)
+      super(config)
       call
     end
 

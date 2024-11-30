@@ -1,23 +1,22 @@
 # frozen_string_literal: true
 
-require_relative "poteto/version"
-require_relative "poteto/generate_review"
-require_relative "poteto/post_review"
-require_relative "poteto/review"
-require "yaml"
+require_relative 'poteto/version'
+require_relative 'poteto/generate_review'
+require_relative 'poteto/post_review'
+require_relative 'poteto/review'
+require_relative 'poteto/config'
 
 module Poteto
   class Error < StandardError; end
 
   class << self
-    DEFAULT_CONFIG_FILE = "poteto.yaml"
-    def generate_reviews(commit_id, config_file)
-      config_file ||= DEFAULT_CONFIG_FILE
-      config = YAML.load_file(config_file)
-      config.fetch("reviewers").map do |reviewer|
-        case reviewer.to_sym
+    def generate_reviews(commit_id, config_file: nil)
+      config = Config.new(file_path: config_file)
+      config.commit_id = commit_id
+      config.reviewers.map do |reviewer_config|
+        case reviewer_config.reviewer
         when :rubocop
-          Poteto::GenerateRubocopReview.new(commit_id).reviews
+          Poteto::GenerateRubocopReview.new(reviewer_config).reviews
         else
           raise ArgumentError, "unknown Reviewer #{reviewer}"
         end

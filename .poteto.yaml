@@ -1,0 +1,5 @@
+reviewers:
+  rubocop:
+    exclude:
+      - spec/
+      - test/

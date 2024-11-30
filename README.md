@@ -2,16 +2,16 @@
 
 * Currently only
   * generates the diff on certain files (as specified by exclude list embedded in the lib)
-  * for each file tries to find the relevant linenos only, since we don't want to throw up 
+  * for each file tries to find the relevant linenos only, since we don't want to throw up
     the entire file's violations to the dev.
-  * For each file we get the line range of the changes by the diffs; both Max and min (the 
+  * For each file we get the line range of the changes by the diffs; both Max and min (the
     algorithm to max and min is subject to change and testing as to where it gives the best results)
   * For each file we use the `max`, `min` line nos to project only those violations in between them
 * Doesn't post to Github yet with the result via octokit
 
 ```bash
 # config file
-$ cat poteto.yaml 
+$ cat .poteto.yaml
 reviewers:
   - rubocop
 $ ./bin/poteto HEAD~1
