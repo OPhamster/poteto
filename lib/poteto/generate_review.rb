@@ -14,7 +14,7 @@ module Poteto
     end
 
     def changed_files
-      git_args = ['git', 'diff', '--diff-filter=ACM', '--name-only', "#{commit_id}..HEAD"]
+      git_args = ['git', 'diff', '--diff-filter=ACM', '--name-only', "#{@commit_id}..HEAD"]
       command(git_args)
     end
 
@@ -26,7 +26,7 @@ module Poteto
         puts "exited with #{status.to_i}"
         puts stderr_str
         puts files_str
-        # exit 1
+        exit 1
       end
     end
 
@@ -40,7 +40,8 @@ module Poteto
 
     def change_ranges(files)
       files.to_h do |f|
-        meta = command(["git diff #{commit_id}..HEAD -U0 -- #{f} | grep '^@@'"])
+        meta = command(["git diff #{@commit_id}..HEAD -U0 -- #{f} | grep '^@@'"])
+        commit_id = command(["git diff --raw #{@commit_id}..HEAD -- #{f}"])[0].split(" ")[3]
         line_nos = meta.map do |m|
           remove, add = m.match(/^@@(.*)@@/)[1].strip.split
           hunk_line_nos = []
@@ -55,7 +56,7 @@ module Poteto
           end
           hunk_line_nos.minmax
         end
-        [f, line_nos]
+        [f, { line_nos: line_nos, commit_id: commit_id }]
       end
     end
   end
@@ -85,7 +86,7 @@ module Poteto
         rc_relevant_failures = rubocop_failures.filter do |f|
           if f.start_with?('::error')
             failure_line = f.split(',')[1].match(/line=(\d+)/)[1].to_i
-            f_change_ranges.any? do |(hunk_start, hunk_end)|
+            f_change_ranges[:line_nos].any? do |(hunk_start, hunk_end)|
               hunk_start <= failure_line && hunk_end >= failure_line
             end
           else
@@ -93,7 +94,7 @@ module Poteto
           end
         end
         rc_relevant_failures.map do |review_data|
-          RubocopReview.new(review_data, file_name: f)
+          RubocopReview.new(review_data, file_name: f, commit_id: f_change_ranges[:commit_id])
         end
       end
     end
