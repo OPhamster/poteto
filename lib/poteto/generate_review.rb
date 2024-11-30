@@ -41,7 +41,9 @@ module Poteto
     def change_ranges(files)
       files.to_h do |f|
         meta = command(["git diff #{@commit_id}..HEAD -U0 -- #{f} | grep '^@@'"])
-        commit_id = command(["git diff --raw #{@commit_id}..HEAD -- #{f}"])[0].split(" ")[3]
+        # get the last commit that changed this file. It may not be the commit that
+        # actually caused the violations. Baby steps. Github doesn't seem to complain
+        commit_id = command(["git log -n 1 --pretty=format:%H -- #{f}"])[0]
         line_nos = meta.map do |m|
           remove, add = m.match(/^@@(.*)@@/)[1].strip.split
           hunk_line_nos = []

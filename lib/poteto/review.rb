@@ -23,7 +23,7 @@ module Poteto
       path, @line, @comment  = @raw_data.split(",")
       @path ||= path.match(/file=(.*)$/)[1]
       @line = @line.match(/line=(\d+)/)[1].to_i
-      @comment = @comment.split("::")[2..]
+      @comment = @comment.split("::")[1..].join("::")
       nil
     end
   end
