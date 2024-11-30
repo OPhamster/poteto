@@ -7,10 +7,15 @@ module Poteto
     attr_reader :exclude, :reviewer, :repo
     attr_accessor :commit_id, :pr_id
 
-    def initialize(reviewer, reviewer_config)
+    def initialize(reviewer, reviewer_config, config)
       @reviewer = reviewer.to_sym
       @exclude = reviewer_config[:exclude] || []
       @repo = reviewer_config.fetch(:repository)
+      @config = config
+    end
+
+    def access_token
+      @config.access_token
     end
   end
 
@@ -35,7 +40,7 @@ module Poteto
                 else
                   DEFAULT_CONFIGS
                 end
-      @reviewers = @config.fetch(:reviewers).map { |r, rc| Poteto::ReviewerConfig.new(r, rc) }
+      @reviewers = @config.fetch(:reviewers).map { |r, rc| Poteto::ReviewerConfig.new(r, rc, self) }
       @access_token = @config[:access_token]
     end
 
