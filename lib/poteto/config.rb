@@ -4,32 +4,33 @@ require 'yaml'
 
 module Poteto
   class ReviewerConfig
-    attr_reader :exclude, :reviewer
-    attr_accessor :commit_id
+    attr_reader :exclude, :reviewer, :repo
+    attr_accessor :commit_id, :pr_id
 
     def initialize(reviewer, reviewer_config)
       @reviewer = reviewer.to_sym
       @exclude = reviewer_config[:exclude] || []
+      @repo = reviewer_config.fetch(:repository)
     end
   end
 
   class Config
-    attr_reader :file_path, :reviewers, :repo, :config, :commit_id
-    attr_accessor :pr_id, :access_token
+    attr_reader :file_path, :reviewers, :repo, :config, :commit_id, :pr_id
+    attr_accessor :access_token
 
     DEFAULT_CONFIG_FILE = '.poteto.yaml'
     DEFAULT_CONFIGS = {
       reviewers: {
         rubocop: {
           exclude: %w[spec/ test/]
-        }
+        },
+        repository: "hjadskhald"
       }
     }
 
-    def initialize(file_path: DEFAULT_CONFIG_FILE)
-      @config = if file_path.nil?
-                  DEFAULT_CONFIGS
-                elsif File.exist?(file_path)
+    def initialize(file_path: nil)
+      file_path ||= DEFAULT_CONFIG_FILE
+      @config = if File.exist?(file_path)
                   deep_symbolize(YAML.load_file(file_path))
                 else
                   DEFAULT_CONFIGS
@@ -41,6 +42,11 @@ module Poteto
     def commit_id=(commit_id)
       @reviewers.each { |r| r.commit_id = commit_id }
       @commit_id = commit_id
+    end
+
+    def pr_id=(pr_id)
+      @reviewers.each { |r| r.pr_id = pr_id }
+      @pr_id = pr_id
     end
 
     def deep_symbolize(h)

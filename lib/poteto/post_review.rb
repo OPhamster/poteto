@@ -2,7 +2,8 @@
 
 module Poteto
   class PostReview
-    attr_reader :pr_id, :commit_id, :post_lambda, :rate_limit_lambda, :repo
+    attr_reader :commit_id, :repo
+    attr_accessor :post_lambda, :rate_limit_lambda
 
     # def initialize(repo, commit_id, pr_id, post_lambda, rate_limit_lambda: nil)
     def initialize(config)
