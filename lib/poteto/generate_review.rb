@@ -85,9 +85,9 @@ module Poteto
       file_change_ranges.flat_map do |f, f_change_ranges|
         rc_args = rubocop_args + [f]
         rubocop_failures = command(rc_args, expected_status_code: 256)
-        rc_relevant_failures = rubocop_failures.filter do |f|
-          if f.start_with?('::error')
-            failure_line = f.split(',')[1].match(/line=(\d+)/)[1].to_i
+        rc_relevant_failures = rubocop_failures.filter do |failure|
+          if failure.start_with?('::error')
+            failure_line = failure.split(',')[1].match(/line=(\d+)/)[1].to_i
             f_change_ranges[:line_nos].any? do |(hunk_start, hunk_end)|
               hunk_start <= failure_line && hunk_end >= failure_line
             end
