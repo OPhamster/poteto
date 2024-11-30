@@ -68,6 +68,8 @@ module Poteto
 
     def call
       @reviews << rubocop_on_changes(files_change_ranges_for_rubocop)
+      @reviews.flatten!
+      @reviews
     end
 
     def files_change_ranges_for_rubocop
