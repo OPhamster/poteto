@@ -15,7 +15,7 @@ module Poteto
 
   class Config
     attr_reader :file_path, :reviewers, :repo, :config, :commit_id
-    attr_accessor :pr_id
+    attr_accessor :pr_id, :access_token
 
     DEFAULT_CONFIG_FILE = '.poteto.yaml'
     DEFAULT_CONFIGS = {
@@ -35,6 +35,7 @@ module Poteto
                   DEFAULT_CONFIGS
                 end
       @reviewers = @config.fetch(:reviewers).map { |r, rc| Poteto::ReviewerConfig.new(r, rc) }
+      @access_token = @config[:access_token]
     end
 
     def commit_id=(commit_id)

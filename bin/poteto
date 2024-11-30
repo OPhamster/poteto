@@ -8,7 +8,7 @@ options = {}
 OptionParser.new do |parser|
   parser.banner = "Usage: poteto <commit_id> <pr_id> [options]"
 
-  parser.on("-n", "--no-post", "Run without posting to github. Throws up the data on STDOUT") do |n|
+  parser.on("-n", "--no-post", "Run without posting to github. Throws up the data on STDOUT") do
     options[:no_post] = true
   end
   parser.on("-r", "--repo", "Name of the github repository") do |r|
@@ -17,16 +17,21 @@ OptionParser.new do |parser|
   parser.on("-f", "--config-file", "Name of the config file") do |c|
     options[:config_file] = c
   end
+  parser.on("-a", "--access-token", "Access token of user with comment priviledges") do |a|
+    options[:access_token] = a
+  end
 end
 
 commit_id = ARGV[0]
 pr_id = ARGV[1]
 config_file = options[:config_file]
+access_token = options[:access_token]
+config = Poteto.config(commit_id, pr_id: pr_id, config_file: config_file, access_token: access_token)
 # Intentional
-if options[:no_post] = true
-  puts Poteto.generate_reviews(commit_id, config_file: config_file).flatten.map(&:raw_data)
+if options[:no_post] == true
+  puts Poteto.generate_reviews(config).flatten.map(&:raw_data)
 else
   # Not supported
   puts "Not supported. Exiting...."
-  Poteto.perform(commit_id, pr_id, repo, config_file: nil)
+  Poteto.perform(config)
 end

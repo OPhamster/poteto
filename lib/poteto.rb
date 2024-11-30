@@ -10,9 +10,15 @@ module Poteto
   class Error < StandardError; end
 
   class << self
-    def generate_reviews(commit_id, config_file: nil)
+    def config(commit_id, pr_id: nil, config_file: nil, access_token: nil)
       config = Config.new(file_path: config_file)
       config.commit_id = commit_id
+      config.pr_id unless pr_id.nil?
+      config.access_token unless access_token.nil?
+      config
+    end
+
+    def generate_reviews(config)
       config.reviewers.map do |reviewer_config|
         case reviewer_config.reviewer
         when :rubocop
@@ -23,9 +29,9 @@ module Poteto
       end
     end
 
-    def perform(commit_id, pr_id, repo, config_file: nil)
-      generate_reviews(commit_id, config_file).each do |reviews|
-        post_reviews(reviews, commit_id, pr_id, repo)
+    def perform(config)
+      generate_reviews(config).each do |reviews|
+        post_reviews(config)
       end
     end
 

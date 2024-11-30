@@ -1,5 +1,6 @@
 reviewers:
   rubocop:
+    repository: ophamster/poteto
     exclude:
       - spec/
       - test/
